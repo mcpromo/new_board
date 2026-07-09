@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OREBOARD — статистика продвижения</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%230f1115%22/><rect x=%228%22 y=%228%22 width=%2216%22 height=%2216%22 fill=%22%234caf6e%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-noise"></div>
+
+<div class="toast" id="toast" hidden></div>
+
+<div class="client-view" id="clientView" hidden>
+  <div class="client-card client-loading" id="clientLoading">
+    <span class="load-spinner" aria-hidden="true"></span>
+    <p>Загружаю прогресс…</p>
+  </div>
+  <div class="client-card" id="clientCard" hidden>
+    <span class="brand-mark" aria-hidden="true"></span>
+    <p class="client-eyebrow">Продвижение проекта</p>
+    <h1 class="client-project-name" id="clientProjectName">—</h1>
+    <div class="client-pct-wrap">
+      <span class="client-pct mono" id="clientPct">0%</span>
+      <span class="client-status" id="clientStatus">В процессе продвижения</span>
+    </div>
+    <div class="progress-track client-progress-track" id="clientProgressTrack"></div>
+    <div class="client-videos" id="clientVideos" hidden>
+      <p class="client-videos-title" id="clientVideosTitle">Видео</p>
+      <div class="client-video-list" id="clientVideoList"></div>
+    </div>
+    <p class="client-footnote">Прогресс обновляется автоматически — просто открывайте эту ссылку, когда хотите проверить.</p>
+  </div>
+  <div class="client-card client-error" id="clientError" hidden>
+    <span class="brand-mark" aria-hidden="true"></span>
+    <p class="client-eyebrow">OREBOARD</p>
+    <h1 class="client-project-name">Не удалось загрузить</h1>
+    <p class="client-footnote">Проверьте ссылку у того, кто её отправил, — возможно, она устарела.</p>
+  </div>
+</div>
+
+<div class="pin-overlay" id="pinOverlay" hidden>
+  <div class="pin-box">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <h1 class="pin-title">OREBOARD</h1>
+    <p class="pin-sub">Введите код доступа</p>
+    <form id="pinForm">
+      <input type="password" id="pinInput" inputmode="numeric" autocomplete="off" autofocus>
+      <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+    <p class="pin-error" id="pinError" hidden>Неверный код, попробуйте ещё раз.</p>
+  </div>
+</div>
+
+<div class="load-overlay" id="loadOverlay">
+  <span class="load-spinner" aria-hidden="true"></span>
+  <p>Подключаюсь к общей базе…</p>
+</div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <div class="brand-text">
+      <span class="brand-name">OREBOARD</span>
+      <span class="brand-sub">учёт продвижения minecraft-проектов</span>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost" id="openSettingsBtn" type="button">Настройки</button>
+    <button class="btn btn-primary" id="openNewProjectBtn" type="button">+ Новый проект</button>
+  </div>
+</header>
+
+<div class="reminder-banner" id="reminderBanner" hidden>
+  <span class="reminder-dot"></span>
+  <p><strong>Пора обновить просмотры.</strong> <span id="reminderText"></span></p>
+  <button class="reminder-dismiss" id="reminderDismiss" type="button" aria-label="Скрыть">×</button>
+</div>
+
+<main class="wrap">
+
+  <section class="stat-row" aria-label="Общая статистика">
+    <div class="slot slot-gold">
+      <span class="slot-icon" aria-hidden="true">◆</span>
+      <div class="slot-body">
+        <span class="slot-label">Заработано всего</span>
+        <span class="slot-value mono" id="statEarned">0 ₽</span>
+      </div>
+    </div>
+    <div class="slot slot-emerald">
+      <span class="slot-icon" aria-hidden="true">◆</span>
+      <div class="slot-body">
+        <span class="slot-label">Активных клиентов</span>
+        <span class="slot-value mono" id="statClients">0</span>
+      </div>
+    </div>
+    <div class="slot slot-lapis">
+      <span class="slot-icon" aria-hidden="true">◆</span>
+      <div class="slot-body">
+        <span class="slot-label">Всего заказов</span>
+        <span class="slot-value mono" id="statOrders">0</span>
+      </div>
+    </div>
+    <div class="slot slot-redstone">
+      <span class="slot-icon" aria-hidden="true">◆</span>
+      <div class="slot-body">
+        <span class="slot-label">Всего просмотров</span>
+        <span class="slot-value mono" id="statViews">0</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="tariffs" aria-label="Тарифы">
+    <div class="section-head">
+      <h2>Тарифы</h2>
+      <span class="section-note">используются при создании нового проекта</span>
+    </div>
+    <div class="tariff-row" id="tariffRow"></div>
+  </section>
+
+  <section class="projects" aria-label="Проекты">
+    <div class="section-head">
+      <h2>Проекты</h2>
+      <span class="section-note" id="projectsCount">0 проектов</span>
+    </div>
+    <div class="project-list" id="projectList"></div>
+    <div class="empty-state" id="emptyState">
+      <span class="empty-icon" aria-hidden="true">▦</span>
+      <p>Проектов пока нет.</p>
+      <button class="btn btn-primary" id="emptyAddBtn" type="button">Добавить первый проект</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Данные хранятся локально, в этом браузере. Обновляйте просмотры вручную раз в сутки — сайт напомнит сам.</p>
+</footer>
+
+<!-- Modal: New / Edit project -->
+<div class="modal-overlay" id="projectModalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h3 id="modalTitle">Новый проект</h3>
+      <button class="modal-close" id="closeProjectModal" type="button" aria-label="Закрыть">×</button>
+    </div>
+    <form id="projectForm">
+      <label class="field">
+        <span>Название проекта / клиент</span>
+        <input type="text" id="fieldName" placeholder="например, «Заброшенный портал»" required>
+      </label>
+      <label class="field">
+        <span>Ссылка на TikTok / YouTube Shorts</span>
+        <input type="url" id="fieldLink" placeholder="https://" required>
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>Тариф</span>
+          <select id="fieldTariff"></select>
+        </label>
+        <label class="field" id="customTargetWrap" hidden>
+          <span>Цель по просмотрам</span>
+          <input type="number" id="fieldCustomTarget" min="1" placeholder="100000">
+        </label>
+        <label class="field" id="customPriceWrap" hidden>
+          <span>Стоимость заказа, ₽</span>
+          <input type="number" id="fieldCustomPrice" min="0" placeholder="0">
+        </label>
+      </div>
+      <label class="field" id="startViewsWrap">
+        <span>Текущие просмотры (если уже есть)</span>
+        <input type="number" id="fieldStartViews" min="0" value="0">
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelProjectModal">Отмена</button>
+        <button type="submit" class="btn btn-primary" id="saveProjectBtn">Создать проект</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Update views -->
+<div class="modal-overlay" id="updateModalOverlay" hidden>
+  <div class="modal modal-sm" role="dialog" aria-modal="true" aria-labelledby="updateModalTitle">
+    <div class="modal-head">
+      <h3 id="updateModalTitle">Обновить просмотры</h3>
+      <button class="modal-close" id="closeUpdateModal" type="button" aria-label="Закрыть">×</button>
+    </div>
+    <form id="updateForm">
+      <p class="update-project-name" id="updateProjectName"></p>
+      <p class="field-hint" style="margin-top:-6px;">Ссылка и просмотры по каждому видео — сумма посчитается сама, клиент увидит список видео.</p>
+      <div class="video-rows" id="updateVideoRows"></div>
+      <button type="button" class="btn btn-ghost btn-small btn-add-row" id="addVideoRowBtn">+ добавить видео</button>
+      <div class="update-sum-line">
+        <span>Итого просмотров</span>
+        <span class="mono" id="updateSumTotal">0</span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelUpdateModal">Отмена</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Settings -->
+<div class="modal-overlay" id="settingsModalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal-head">
+      <h3 id="settingsTitle">Настройки</h3>
+      <button class="modal-close" id="closeSettingsModal" type="button" aria-label="Закрыть">×</button>
+    </div>
+    <p class="field-hint">
+      Просмотры на TikTok и YouTube Shorts видны прямо на публичной странице видео — просто откройте ссылку и посмотрите число. Обновляйте их на карточке проекта кнопкой «Обновить просмотры».
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-danger-ghost" id="resetDataBtn">Сбросить все данные</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

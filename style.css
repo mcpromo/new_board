@@ -736,6 +736,9 @@ button{ font-family: inherit; }
   box-shadow: 0 20px 60px rgba(0,0,0,.5);
   animation: modalIn .2s ease;
 }
+@media (min-width: 560px){
+  .client-card.videos-wide{ max-width: 640px; }
+}
 .client-card .brand-mark{ margin-bottom: 6px; }
 
 .client-eyebrow{
@@ -816,6 +819,20 @@ button{ font-family: inherit; }
 .client-video-item:hover{ border-color: var(--emerald-dim); color: var(--text); transform: translateX(2px); }
 .client-video-item .mono{ color: var(--text-faint); font-size: 12.5px; }
 
+/* После 15 видео список у клиента тоже разбивается на 2 колонки. */
+@media (min-width: 560px){
+  .client-video-list.two-col{
+    display: block;
+    column-count: 2;
+    column-gap: 16px;
+  }
+  .client-video-list.two-col .client-video-item{
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    margin-bottom: 6px;
+  }
+}
+
 .client-footnote{
   font-size: 12.5px;
   color: var(--text-faint);
@@ -838,4 +855,3 @@ button{ font-family: inherit; }
 @media (prefers-reduced-motion: reduce){
   *{ transition: none !important; }
 }
-

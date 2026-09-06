@@ -509,7 +509,15 @@ function normalizeVideoRows(videoViews){
   );
 }
 
+function updateVideoColumnsLayout(){
+  const isWide = updateRows.length > 15;
+  updateVideoRowsEl.classList.toggle('two-col', isWide);
+  const modalEl = updateModalOverlay.querySelector('.modal');
+  if(modalEl) modalEl.classList.toggle('videos-wide', isWide);
+}
+
 function renderUpdateRows(focusLast){
+  updateVideoColumnsLayout();
   updateVideoRowsEl.innerHTML = updateRows.map((row, i) => `
     <div class="video-row">
       <span class="video-row-num">${i + 1}.</span>
@@ -664,3 +672,4 @@ document.getElementById('resetDataBtn').addEventListener('click', async () => {
     alert('Не удалось сбросить данные: ' + err.message);
   }
 });
+

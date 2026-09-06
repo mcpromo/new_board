@@ -544,6 +544,21 @@ button{ font-family: inherit; }
   .video-row-remove{ grid-area: remove; }
 }
 
+/* После 15 видео список разбивается на 2 колонки, чтобы не растягиваться слишком длинным списком вниз. */
+@media (min-width: 560px){
+  .video-rows.two-col{
+    display: block;
+    column-count: 2;
+    column-gap: 20px;
+  }
+  .video-rows.two-col .video-row{
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    margin-bottom: 8px;
+  }
+  .modal.videos-wide{ max-width: 720px; }
+}
+
 .btn-add-row{ width: 100%; margin-bottom: 16px; }
 
 .update-sum-line{
@@ -823,3 +838,4 @@ button{ font-family: inherit; }
 @media (prefers-reduced-motion: reduce){
   *{ transition: none !important; }
 }
+

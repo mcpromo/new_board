@@ -197,11 +197,16 @@ function renderClientView(p){
   document.getElementById('clientProgressTrack').innerHTML = progressSegments(pct);
 
   const videosBox = document.getElementById('clientVideos');
+  const videoListEl = document.getElementById('clientVideoList');
+  const clientCardEl = document.getElementById('clientCard');
   const videos = Array.isArray(p.videoViews) ? p.videoViews : [];
   const links = videos.filter(v => v && typeof v === 'object' && v.link);
+  const isWide = links.length > 15;
+  videoListEl.classList.toggle('two-col', isWide);
+  if(clientCardEl) clientCardEl.classList.toggle('videos-wide', isWide);
   if(links.length > 0){
     document.getElementById('clientVideosTitle').textContent = `Видео (${links.length})`;
-    document.getElementById('clientVideoList').innerHTML = links.map((v, i) => `
+    videoListEl.innerHTML = links.map((v, i) => `
       <a class="client-video-item" href="${escapeAttr(v.link)}" target="_blank" rel="noopener">
         <span>Видео ${i + 1}</span>
         <span class="mono">${Number.isFinite(v.views) ? formatNumber(v.views) + ' пр.' : ''}</span>
@@ -672,4 +677,3 @@ document.getElementById('resetDataBtn').addEventListener('click', async () => {
     alert('Не удалось сбросить данные: ' + err.message);
   }
 });
-

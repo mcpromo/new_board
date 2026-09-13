@@ -762,6 +762,27 @@ button{ font-family: inherit; }
   padding: 40px 0;
 }
 
+/* ---------- themed scrollbars for internally-scrolling surfaces ---------- */
+
+.modal, .client-card{
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-light) transparent;
+}
+.modal::-webkit-scrollbar, .client-card::-webkit-scrollbar{
+  width: 8px;
+}
+.modal::-webkit-scrollbar-track, .client-card::-webkit-scrollbar-track{
+  background: transparent;
+}
+.modal::-webkit-scrollbar-thumb, .client-card::-webkit-scrollbar-thumb{
+  background: var(--border-light);
+  border-radius: 999px;
+  border: 2px solid var(--panel);
+}
+.modal::-webkit-scrollbar-thumb:hover, .client-card::-webkit-scrollbar-thumb:hover{
+  background: var(--emerald-dim);
+}
+
 /* ---------- toast ---------- */
 
 .toast{
@@ -788,7 +809,10 @@ button{ font-family: inherit; }
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 25% 20%, rgba(76,175,110,.10), transparent 45%),
+    radial-gradient(circle at 80% 75%, rgba(219,168,70,.08), transparent 45%),
+    var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -804,6 +828,7 @@ button{ font-family: inherit; }
   width: 100%;
   max-width: 420px;
   max-height: 100%;
+  position: relative;
   overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--panel);
@@ -812,6 +837,15 @@ button{ font-family: inherit; }
   padding: 40px 32px 34px;
   box-shadow: 0 20px 60px rgba(0,0,0,.5);
   animation: modalIn .2s ease;
+}
+.client-card-accent{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(90deg, var(--emerald), var(--gold), var(--lapis));
 }
 @media (min-width: 560px){
   .client-card.videos-wide{ max-width: 640px; }
@@ -842,11 +876,20 @@ button{ font-family: inherit; }
 .client-pct{
   font-size: 56px;
   font-weight: 700;
-  color: var(--emerald);
   line-height: 1;
+  background: linear-gradient(135deg, var(--emerald) 25%, #7fd9a0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   text-shadow: 0 0 22px rgba(76,175,110,.35);
 }
-.client-pct.is-over{ color: var(--gold); text-shadow: 0 0 22px rgba(219,168,70,.35); }
+.client-pct.is-over{
+  background: linear-gradient(135deg, var(--gold) 25%, #f0c876 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 22px rgba(219,168,70,.35);
+}
 .client-status{
   font-size: 13px;
   color: var(--text-faint);

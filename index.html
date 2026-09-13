@@ -85,32 +85,25 @@
 <main class="wrap">
 
   <section class="stat-row" aria-label="Общая статистика">
-    <div class="slot slot-gold">
-      <span class="slot-icon" aria-hidden="true">◆</span>
-      <div class="slot-body">
-        <span class="slot-label">Заработано всего</span>
-        <span class="slot-value mono" id="statEarned">0 ₽</span>
+    <div class="stat-hero">
+      <span class="stat-hero-icon" aria-hidden="true">◆</span>
+      <div class="stat-hero-body">
+        <span class="stat-hero-label">Всего просмотров набрано</span>
+        <span class="stat-hero-value" id="statViews">0</span>
       </div>
     </div>
-    <div class="slot slot-emerald">
-      <span class="slot-icon" aria-hidden="true">◆</span>
-      <div class="slot-body">
-        <span class="slot-label">Активных клиентов</span>
-        <span class="slot-value mono" id="statClients">0</span>
+    <div class="mini-stats">
+      <div class="mini-stat mini-stat-gold">
+        <span class="mini-stat-label">Заработано</span>
+        <span class="mini-stat-value" id="statEarned">0 ₽</span>
       </div>
-    </div>
-    <div class="slot slot-lapis">
-      <span class="slot-icon" aria-hidden="true">◆</span>
-      <div class="slot-body">
-        <span class="slot-label">Всего заказов</span>
-        <span class="slot-value mono" id="statOrders">0</span>
+      <div class="mini-stat mini-stat-emerald">
+        <span class="mini-stat-label">Активных клиентов</span>
+        <span class="mini-stat-value" id="statClients">0</span>
       </div>
-    </div>
-    <div class="slot slot-redstone">
-      <span class="slot-icon" aria-hidden="true">◆</span>
-      <div class="slot-body">
-        <span class="slot-label">Всего просмотров</span>
-        <span class="slot-value mono" id="statViews">0</span>
+      <div class="mini-stat mini-stat-lapis">
+        <span class="mini-stat-label">Всего заказов</span>
+        <span class="mini-stat-value" id="statOrders">0</span>
       </div>
     </div>
   </section>
@@ -194,6 +187,7 @@
     <form id="updateForm">
       <p class="update-project-name" id="updateProjectName"></p>
       <p class="field-hint" style="margin-top:-6px;">Ссылка и просмотры по каждому видео — сумма посчитается сама, клиент увидит список видео.</p>
+      <button type="button" class="btn btn-ghost btn-small btn-open-all" id="openAllLinksBtn">↗ Открыть все ссылки в новых вкладках</button>
       <div class="video-rows" id="updateVideoRows"></div>
       <button type="button" class="btn btn-ghost btn-small btn-add-row" id="addVideoRowBtn">+ добавить видео</button>
       <div class="update-sum-line">

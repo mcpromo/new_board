@@ -296,6 +296,25 @@ function progressSegments(pct){
   return html;
 }
 
+function daysSince(dateStr){
+  if(!dateStr) return null;
+  const [y, m, d] = dateStr.split('-').map(Number);
+  if(!y) return null;
+  const then = new Date(y, m - 1, d);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.round((today - then) / 86400000);
+}
+
+function updateChipHtml(lastUpdated){
+  const days = daysSince(lastUpdated);
+  if(days === null) return '<span class="update-chip">Просмотры ещё не обновлялись</span>';
+  if(days <= 0) return '<span class="update-chip is-today">Обновлено сегодня</span>';
+  if(days === 1) return '<span class="update-chip is-stale">Обновлено вчера</span>';
+  if(days <= 3) return `<span class="update-chip is-stale">Обновлено ${days} дн. назад</span>`;
+  return `<span class="update-chip is-very-stale">Обновлено ${days} дн. назад</span>`;
+}
+
 function pluralProjects(n){
   const mod10 = n % 10, mod100 = n % 100;
   if(mod10 === 1 && mod100 !== 11) return 'проект';
@@ -347,6 +366,7 @@ function renderProjects(){
             <span>${formatNumber(p.current)} / ${formatNumber(p.target)} просмотров</span>
             <span class="pct">${pct.toFixed(1).replace('.0','')}%</span>
           </div>
+          ${done ? '' : updateChipHtml(p.lastUpdated)}
         </div>
       `;
 
@@ -577,6 +597,18 @@ addVideoRowBtn.addEventListener('click', () => {
   syncRowsFromDom();
   updateRows.push({ link: '', views: '' });
   renderUpdateRows(true);
+});
+
+const openAllLinksBtn = document.getElementById('openAllLinksBtn');
+openAllLinksBtn.addEventListener('click', () => {
+  syncRowsFromDom();
+  const links = updateRows.map(r => String(r.link || '').trim()).filter(Boolean);
+  if(links.length === 0){
+    showToast('Сначала добавьте ссылки на видео');
+    return;
+  }
+  links.forEach(link => window.open(link, '_blank', 'noopener'));
+  showToast(`Открыто вкладок: ${links.length}. Не забудьте разрешить всплывающие окна, если браузер их заблокировал.`);
 });
 
 function openUpdateModal(id){
